@@ -5,7 +5,7 @@ from itertools import count
 from functions import exceptions
 
 # define oque * irá importar
-__all__ = ['show_banner', 'password_generator', ]
+__all__ = ['show_banner', 'password_generator']
 
 
 def show_banner() -> str:
