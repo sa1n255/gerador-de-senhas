@@ -1,14 +1,23 @@
-from functions.functions import password_generator, banner, reset, vermelho, bold
+from functions.functions import *
+from functions import exceptions
+from functions.colors import *
 
-banner()
-user_choice = input("Quantos digitos você quer na sua senha? ")
+def main():
+    show_banner()
 
-if user_choice.isdigit():
-    user_choice = int(user_choice)
-else:
-    print(vermelho + "Input inválido, irmão!" + reset)
-    print(vermelho + "Encerrando..." + reset)
-    quit()
+    try:
+        user_password_length = int(input("Tamanho da senha: (Recomendado: 8 até 50)\n>>> "))
 
-output_password_generator = password_generator(user_choice)
-print(f"Senha gerada: {bold + output_password_generator + reset}")
+    except KeyboardInterrupt as ki:
+        exceptions.keyboard_interrupt(ki)
+
+    except Exception as error:
+        exceptions.exception(error)
+    
+    else:
+        print("Gerando senha...")
+
+    print(f"Senha gerada: {bold + password_generator(user_password_length) + reset}")
+
+if __name__ == '__main__':
+    main()

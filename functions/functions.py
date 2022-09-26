@@ -1,46 +1,82 @@
-from random import choice
-from string import ascii_letters, digits, punctuation
+from functions.colors import *
+from string import ascii_letters as all_letters, digits as all_numbers
+from secrets import choice
+from itertools import count
+from functions import exceptions
 
-vermelho = '\033[31m'
-verde = '\033[32m'
-azul = '\033[34m'
-ciano = '\033[36m'
-magenta = '\033[35m'
-amarelo = '\033[33m'
-preto = '\033[30m'
-branco = '\033[37m'
-reset = '\033[0;0m'
-bold = '\033[1m'
+# define oque * irá importar
+__all__ = ['show_banner', 'password_generator', ]
 
 
-def banner():
+def show_banner() -> str:
     ascii_art = '''
 ._._._._._._._._._|__________________________________________________________,
 |_|_|_|_|_|_|_|_|_|_________________________________________________________/
-                  |
+                  |                                                            
 '''
     print("")
     print(vermelho + bold + ascii_art + reset)
     print("")
-    print(amarelo + bold + "Password Generator v1.0" + reset)
+    print(amarelo + bold + "Password Generator v1.5" + reset)
     print(amarelo + bold + "-"*30 + reset)
     print(amarelo + bold + "GitHub: https://github.com/sa1n255" + reset)
     print(amarelo + bold + "Coded by Sa1n" + reset)
-    
-    # print(amarelo + bold + "" + reset)
+
     print("")
 
 
-def password_generator(passwd_len = 8):
-    ascii_options = ascii_letters
-    number_options = digits
-    punt_options = punctuation
-    options = ascii_options + number_options + punt_options
+def password_generator(password_lenght: int = 8) -> str:
+    upper_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    reduced_punctuation = '&$%#@'
+    all_options = all_letters + all_numbers + reduced_punctuation
+    try:
+        while True:
 
-    user_password = ""
+            # A Senha do Usuario sempre deve começar com letra Maiuscula
+            # A Senha do Usuario sempre deve conter números
+            # A Senha do Usuario sempre deve conter pontuações
+            # A Senha do Usuário nunca deve ter mais de dois caracteres repetidos
 
-    for i in range(0, passwd_len):
-        digit = choice(options)
-        user_password += digit
+            user_password = ""
+            user_password += choice(upper_letters)
 
-    return user_password
+            for i in range(password_lenght-1):
+                user_password += choice(all_options)
+            # Checa se a senha tem Números
+            for i in all_numbers:
+                if i not in user_password:
+                    password_has_number = False
+                else:
+                    password_has_number = True
+                    break
+            # Checa se a senha tem Letras
+            for i in all_letters:
+                if i not in user_password:
+                    password_has_letters = False
+                else:
+                    password_has_letters = True
+                    break
+            # Checa se a senha tem Pontuações
+            for i in reduced_punctuation:
+                if i not in user_password:
+                    password_has_punc = False
+                else:
+                    password_has_punc = True
+                    break
+            # Checa se a senha tem muitos caracteres repetidos
+            for i in user_password:
+                if user_password.count(i) > 2:
+                    too_many_characters = True
+                    break
+                else:
+                    too_many_characters = False
+            if (password_has_number == True and password_has_punc == True and password_has_letters == True and too_many_characters == False) == True:
+                return user_password
+            else:
+                pass
+
+    except KeyboardInterrupt as ki:
+        exceptions.keyboard_interrupt(ki)
+
+    except Exception as error:
+        exceptions.exception(error)
